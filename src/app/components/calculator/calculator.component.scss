@@ -1,0 +1,58 @@
+.container {
+    width: 100%;
+
+    .keyboard {
+        button {
+            width: 100%;
+            height: 100%;
+            font-size: large;
+            font-weight: 500; 
+        }
+    }
+
+    .display {
+        height: 25vh;
+        min-height: 168px;
+        max-height: 252px;
+        text-align: right;
+        font-size: x-large;
+        overflow: auto;
+
+        .summary {
+            opacity: 0.33;
+            font-size: large;
+        }
+    }
+}
+
+@media(max-width: 768px) {
+    mat-card {
+        border-radius: 0px;
+        box-shadow: 0 4px 2px -2px rgba(0, 0, 0, 0.2);
+    }
+}
+
+// Screens over 769px
+@media(min-width: 769px) {
+    .container {
+        width: 650px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 5%;
+        margin-bottom: 50px;
+
+        .display {
+            font-size: xx-large;
+            
+            .summary {
+                font-size: x-large;
+            }
+        }
+
+        .keyboard {
+            button {
+                font-size: x-large;
+            }
+        }
+    }
+}
