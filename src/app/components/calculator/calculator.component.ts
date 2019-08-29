@@ -17,7 +17,7 @@ export class CalculatorComponent implements OnInit {
 
   @ViewChild('backspace', {static: false}) backspace: MatButton;
   @ViewChildren(MatButton) matBtns: QueryList<MatButton>;
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(private snackBar: MatSnackBar, private opPipe: OperatorSymbolPipe) { }
 
   ngOnInit() {
     this.clearDisplay();
@@ -26,22 +26,23 @@ export class CalculatorComponent implements OnInit {
   @HostListener('document:keyup', ['$event.key'])
   onKeyUp(key: string) {
     const findBtn = (): MatButton => {
-      if (key.match(OPERATORS) !== null) {
-        const op = new OperatorSymbolPipe();
-        return this.matBtns.find(b => b._elementRef.nativeElement.textContent === op.transform(key));
-      } 
-      else {
+      if (key.match(OPERATORS))
+        return this.matBtns.find(b => b._elementRef.nativeElement.textContent === this.opPipe.transform(key)); 
+      else
         return this.matBtns.find(b => b._elementRef.nativeElement.textContent === key);
-      }
     };
     const ripple = (btn: MatButton) => { btn.ripple.launch(null) };
 
     if ((+key >= 0 && +key <= 9) || key === '.') {
       this.onNumClicked(key);
     } 
-    else if (key.match(OPERATORS) !== null) {
+    else if (key.match(OPERATORS)) {
       this.onOpClicked(key);
-    } 
+    }
+    else if (key === '(' || key === ')') {
+      this.expression += key;
+      return;
+    }
     else if (key === '=') {
       this.onEqualsClicked();
     } 
@@ -50,7 +51,8 @@ export class CalculatorComponent implements OnInit {
       ripple(this.backspace);
       return;
     } 
-    else if (key === 'C') {
+    else if (key.toUpperCase() === 'C') {
+      key = 'C';
       this.clearDisplay();
     } 
     // key not on keyboard
@@ -65,8 +67,7 @@ export class CalculatorComponent implements OnInit {
     const lastNum = this.expression.split(OPERATORS).pop(); // the last number(s) that follows an operator
 
     if (num === '.') {
-      // if the last character isn't an operator and the current number doesn't already contain a decimal point
-      if (this.expression[this.expression.length - 1].match(OPERATORS) === null && !lastNum.includes('.')) {
+      if (!this.expression[this.expression.length - 1].match(OPERATORS) && !lastNum.includes('.')) {
         this.expression += num;
       }
     } 
@@ -81,7 +82,7 @@ export class CalculatorComponent implements OnInit {
 
   onOpClicked(operator: string) {
     // if the last char was already an operator (or a decimal point), replace it with the new operator
-    if (this.expression[this.expression.length - 1].match(/[-+.*^\/]/) !== null) {
+    if (this.expression[this.expression.length - 1].match(/[-+.*^\/]/)) {
       this.expression = this.expression.slice(0, -1) + operator;
     }
     else {
@@ -91,20 +92,29 @@ export class CalculatorComponent implements OnInit {
 
   onEqualsClicked() {
     // if last character is not an operator (or decimal point)
-    if (this.expression[this.expression.length - 1].match(/[-+.*^\/]/) === null) {
+    if (!this.expression[this.expression.length - 1].match(/[-+.*^\/]/)) {
       this.summary = this.expression;
 
-      let ans: number;
       try {
-        ans = evaluate(this.expression);
-      } 
-      finally {
+        this.checkParens();
+      }
+      catch(e) {
+        this.invalidExpression("Unbalanced parentheses.");
+        return;
+      }
+      
+      try {
+        const ans = evaluate(this.expression);
+
         if (isFinite(ans)) {
           this.expression = ans.toString();
         }
         else {
           this.invalidExpression(ans);
         }
+      } 
+      catch(e) {
+        this.invalidExpression();
       }
     }
   }
@@ -123,11 +133,37 @@ export class CalculatorComponent implements OnInit {
     this.summary = null;
   }
 
-  invalidExpression(ans: any) {
+  checkParens() {
+    const parenStack: string[] = [];
+
+    [...this.expression].forEach(value => {
+      switch (value) {
+        case '(':
+          parenStack.push(value);
+          break;
+        case ')':
+          if (parenStack.length > 0) {
+            parenStack.pop();
+          }
+          else {
+            throw new Error();
+          }
+          break;
+        default: 
+          break;
+      }
+    });
+
+    // Stack still not empty
+    if (parenStack.length > 0)
+      throw new Error();
+  }
+
+  invalidExpression(errMsg?: any) {
     this.expression = '0';
-    this.snackBar.open(`Invalid Expression: ${ans}`, null, {
+    this.snackBar.open(`Invalid Expression${errMsg ? ': '+ errMsg : ''}`, null, {
       duration: 3000,
-      verticalPosition: 'bottom',
+      verticalPosition: 'bottom'
     });
   }
 }

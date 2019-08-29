@@ -22,7 +22,9 @@ import { OperatorSymbolPipe } from './pipes/operator-symbol/operator-symbol.pipe
     BrowserAnimationsModule,
     MaterialModule
   ],
-  providers: [],
+  providers: [
+    OperatorSymbolPipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
