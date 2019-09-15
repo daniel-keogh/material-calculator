@@ -161,7 +161,7 @@ export class CalculatorComponent implements OnInit {
 
   invalidExpression(errMsg?: any) {
     this.expression = '0';
-    this.snackBar.open(`Invalid Expression${errMsg ? ': '+ errMsg : ''}`, null, {
+    this.snackBar.open(`Invalid Expression${errMsg ? ': ' + errMsg : ''}`, null, {
       duration: 3000,
       verticalPosition: 'bottom'
     });
