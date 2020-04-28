@@ -1,14 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'operatorSymbol'
+  name: 'operatorSymbol',
 })
 export class OperatorSymbolPipe implements PipeTransform {
-
   transform(operator: string): string {
     let transformed = '';
 
-    [...operator].forEach(op => {
+    [...operator].forEach((op) => {
       switch (op) {
         case '/':
           transformed += '\u00F7';
@@ -24,7 +23,7 @@ export class OperatorSymbolPipe implements PipeTransform {
           break;
       }
     });
+
     return transformed;
   }
-
 }

@@ -31,9 +31,10 @@
         </div>
 
         <div>
-          <mat-grid-tile *ngFor="let key of ['0', '.', '=']; last as isEquals" [colspan]="isEquals ? 2 : 1">
+          <mat-grid-tile *ngFor="let key of ['0', '.', '=']; last as isEquals; first as isZero"
+            [colspan]="isEquals ? 2 : 1">
             <button mat-button
-              (click)="isEquals ? onEqualsClicked() : onNumClicked(key)"
+              (click)="isEquals ? onEqualsClicked() : isZero ? onNumClicked(key) : onDecimalClicked()"
               [color]="isEquals ? 'primary' : 0">{{key}}</button>
           </mat-grid-tile>
         </div>

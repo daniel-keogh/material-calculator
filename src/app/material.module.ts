@@ -1,15 +1,13 @@
 import { NgModule } from '@angular/core';
 
-import {
-  MatButtonModule,
-  MatCardModule,
-  MatDividerModule,
-  MatGridListModule,
-  MatIconModule,
-  MatSnackBarModule,
-  MatToolbarModule,
-  MatTooltipModule
-} from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -20,7 +18,7 @@ import {
     MatIconModule,
     MatSnackBarModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
   ],
   exports: [
     MatButtonModule,
@@ -30,7 +28,7 @@ import {
     MatIconModule,
     MatSnackBarModule,
     MatToolbarModule,
-    MatTooltipModule
-  ]
+    MatTooltipModule,
+  ],
 })
 export class MaterialModule {}
